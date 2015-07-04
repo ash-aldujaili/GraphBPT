@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BPT" default="compile" basedir="..">
+
+  <tstamp>
+    <format property="TODAY_FR" pattern="yyyyMMdd" locale="fr,FR"/>
+  </tstamp>
+
+  <!-- ======================================== -->
+  <description>
+    BPT demo
+  </description>
+
+  <!-- ========================================
+			 <property name="xms"            value="-Xms7G"/>
+			 <property name="xmx"            value="-Xmx7G"/>
+			 <property name="xss"            value="-Xss512M"/>
+			 ======================================== -->
+  <property name="work"           location="ws"/>
+  <property name="data"           location="data"/>
+  <property name="config"         location="data/config"/>
+  <property name="log"            location="data/log"/>
+  <property name="src"            location="src"/>
+  <property name="java.src"       location="src/java"/>
+  <property name="java.test"      location="src/javaTest"/>
+  <property name="build"          location="build"/>
+  <property name="build.api"      location="build/api"/>
+  <property name="build.class"    location="build/class"/>
+  <property name="build.jar"      location="jar"/>
+  <property name="build.distrib"  location="distrib"/>
+  <property name="lib"            location="lib"/>
+  <property name="j3d.home"       location="/opt/java/jre/lib/ext/"/>
+
+  <property name="misc.class"     location="lib/Misc.jar"/>
+  <property name="jmatoi.class"   location="lib/jmatio.jar"/>
+  <property name="jama.class"     location="lib/Jama-1.0.3.jar"/>
+  <property name="j3d.class"      location="${j3d.home}j3dcore.jar:${j3d.home}j3dutils.jar:${j3d.home}vecmath.jar"/>
+  <property name="algs4.class"    location="lib/algs4.jar"/>
+  <property name="stdlib.class"   location="lib/stdlib.jar"/>
+  <path id="build.classpath">
+    <pathelement location="${build.class}" />
+  </path>
+
+  <!-- ======================================== -->
+  <target name="1stCmd" description="Must be done first of all (create link to launch ant in workspace)">
+    <mkdir dir="${work}"/>
+    <mkdir dir="${data}"/>
+    <mkdir dir="${build}"/>
+    <mkdir dir="${config}"/>
+    <mkdir dir="${src}"/>
+    <mkdir dir="${java.src}"/>
+
+    <symlink failonerror="false" link="${work}/build.xml" resource="../ant/build.xml"/>
+    <symlink failonerror="false" link="${work}/"          resource="${data}"/>
+    <symlink failonerror="false" link="${work}/"          resource="${lib}"/>
+    <symlink failonerror="false" link="${work}/"          resource="${build.jar}"/>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="cleanConfig" description="clean XML file configuration" >
+    <dirname property="pwd" file="${ant.file}" />
+
+    <replaceregexp byline="true">
+      <regexp pattern="(.*)${pwd}(.*)"/>
+      <substitution expression="\1\.\2"/>
+      <fileset dir="data/config">
+				<include name="*.xml"/>
+      </fileset>
+    </replaceregexp>
+    <replaceregexp byline="true">
+      <regexp pattern=".*entry key=.Language.*"/>
+      <substitution expression=""/>
+      <fileset dir="data/config">
+				<include name="*.xml"/>
+      </fileset>
+    </replaceregexp>
+    <replaceregexp byline="true">
+      <regexp pattern=".*entry key=.Variant.*"/>
+      <substitution expression=""/>
+      <fileset dir="data/config">
+				<include name="*.xml"/>
+      </fileset>
+    </replaceregexp>
+    <replaceregexp byline="true">
+      <regexp pattern=".*entry key=.Country.*"/>
+      <substitution expression=""/>
+      <fileset dir="data/config">
+				<include name="*.xml"/>
+      </fileset>
+    </replaceregexp>
+    <replaceregexp byline="true">
+      <regexp pattern=".*entry key=.*Name.>.*"/>
+      <substitution expression=""/>
+      <fileset dir="data/config">
+				<include name="*.xml"/>
+      </fileset>
+    </replaceregexp>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="clean" description="clean up (remove classes and temporaries files)" >
+    <delete dir="${build.class}"/>
+    <delete dir="${build.api}"/>
+    <delete verbose="true">
+      <fileset defaultexcludes="no" dir="." includes="**/*~"/>
+      <fileset defaultexcludes="no" dir="." includes="**/#*#"/>
+      <fileset defaultexcludes="no" dir="." includes="**/.#*"/>
+    </delete>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="wipe" depends="clean,cleanConfig" description="delete all product file (keep only sources)" >
+    <delete dir="${log}"/>
+    <delete file="${work}/build.xml"/>
+    <symlink failonerror="false" action="delete" link="${work}/data"/>
+    <delete dir="${build}"/> 
+  </target>
+
+  <!-- ======================================== -->
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <mkdir dir="${build.api}"/>
+    <mkdir dir="${build.class}"/>
+    <mkdir dir="${log}"/>
+    <mkdir dir="${build.jar}"/>
+    <mkdir dir="${build.distrib}"/>
+    <copy todir="${build.class}/data/config">
+      <fileset dir="${data}/config">
+				<include name="*.properties"/>
+				<include name="*.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="compile" depends="init" description="compile the source" >
+    <javac destdir="${build.class}" includeantruntime="false" deprecation="true"  debug="true" verbose="false" encoding="iso-8859-1">
+      <compilerarg value="-Xlint" />
+      <src path="${java.src}"/>
+      <src path="${java.test}"/>
+      <classpath>
+				<pathelement location="${build.class}"/>
+				<pathelement path="${java.class.path}:${misc.class}:${jmatoi.class}:${jama.class}:${j3d.class}:${stdlib.class}:${algs4.class}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="run" depends="compile" description="execute" >
+    <java classname="ismmBpt2015.control.LaunchBpt" fork="true" dir="${work}">
+      <!--jvmarg value="${xms}"/>
+					<jvmarg value="${xmx}"/>
+					<jvmarg value="${xss}"/-->
+      <classpath>
+				<pathelement location="${build.class}"/>
+				<pathelement path="${java.class.path}:${misc.class}:${jmatoi.class}:${jama.class}:${j3d.class}:${stdlib.class}:${algs4.class}"/>
+      </classpath>
+    </java>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="BPTJar" depends="compile,OtherJar" description="make BPT jar" >
+    <jar destfile="${build.jar}/IsmmBpt2015.jar" >
+      <manifest>
+				<attribute name="Built-By" value="Author"/>
+				<attribute name="Created-By" value="Author"/>
+				<!--attribute name="Class-Path" value="Misc.jar jmatio.jar Jama-1.0.3.jar stdlib.jar algs4.jar j3dcore.jar j3dutils.jar vecmath.jar"/-->
+				<attribute name="Main-Class" value="ismmBpt2015.control.LaunchBpt"/>
+      </manifest>
+			<zipgroupfileset dir="lib">
+				<!--fileset dir="lib" -->
+				<include name="Misc.jar"/>
+				<include name="jmatio.jar"/>
+				<include name="Jama-1.0.3.jar"/>
+				<include name="stdlib.jar"/>
+				<include name="algs4.jar"/>
+
+				<!--include name="vecmath.jar"/>
+				<include name="j3dutils.jar"/>
+				<include name="j3dcore.jar"/-->
+
+				<!--/fileset-->
+			</zipgroupfileset>
+      <fileset dir="${build.class}" casesensitive="yes">
+				<include name="**/ismmBpt2015/**/*.class"/>
+      </fileset>
+      <fileset dir="." >
+				<include name="data/images/button/*.png" />
+				<include name="data/images/bpt.png" />
+				<include name="data/config/Bpt*.properties" />
+				<include name="data/config/Bpt.xml" />
+				<include name="data/texts/*.html"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="OtherJar" depends="compile" description="make BPT jar" >
+    <jar destfile="${lib}/algs4.jar" >
+      <manifest>
+				<attribute name="Built-By" value="Author"/>
+				<attribute name="Created-By" value="Author"/>
+      </manifest>
+      <fileset dir="${build.class}" casesensitive="yes">
+				<include name="**/edu/princeton/cs/algs4/**/*.class"/>
+      </fileset>
+    </jar>
+    <jar destfile="${lib}/stdlib.jar" >
+      <manifest>
+				<attribute name="Built-By" value="Author"/>
+				<attribute name="Created-By" value="Author"/>
+      </manifest>
+      <fileset dir="${build.class}" casesensitive="yes">
+				<include name="**/edu/princeton/cs/stdlib/**/*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="runBPTJar" depends="BPTJar" description="execute jar" >
+    <java classname="ismmBpt2015.control.LaunchBpt" fork="true" dir="${work}">
+      <!--jvmarg value="${xms}"/>
+					<jvmarg value="${xmx}"/>
+					<jvmarg value="${xss}"/-->
+      <classpath>
+				<pathelement location="${build.jar}/IsmmBpt2015.jar"/>
+				<pathelement path="${java.class.path}:${misc.class}:${jmatoi.class}:${jama.class}:${j3d.class}:${stdlib.class}:${algs4.class}:"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="srcZip" depends="cleanConfig,BPTJar" description="create distribution" >
+    <zip destfile="${build.distrib}/${TODAY_FR}-SCR.zip">
+      <zipfileset prefix="IsmmBpt2015/" dir=".">
+				<include name="ws/Readme.txt"/>
+				<include name="ant/build.xml"/>
+				<include name="${build.jar}/IsmmBpt2015.jar"/>
+				<include name="data/config/*.properties"/>
+				<include name="data/config/*.xml"/>
+				<include name="data/images/button/*.png"/>
+				<include name="data/images/ismmBpt2015.png"/>
+				<include name="data/texts/*.html"/>
+				<include name="lib/*.jar"/>
+				<include name="jar/IsmmBpt2015.jar"/>
+				<include name="src/java/**/*.java"/>
+      </zipfileset>
+      <zipfileset prefix="IsmmBpt2015/" dir="." filemode="755">
+				<include name="ws/launchIsmmBpt2015.sh"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <!-- ======================================== -->
+  <target name="exeZip" depends="cleanConfig,BPTJar" description="create distribution" >
+    <zip destfile="${build.distrib}/${TODAY_FR}-EXE.zip">
+      <zipfileset prefix="IsmmBpt2015/" dir=".">
+				<include name="jar/IsmmBpt2015.jar"/>
+				<include name="lib/Misc.jar"/>
+				<include name="lib/jamtio.jar"/>
+				<include name="lib/Jama-1.0.3.jar"/>
+				<include name="lib/vecmath-1.5.2.jar"/>
+				<include name="lib/stdlib.jar"/>
+				<include name="lib/algs4.jar"/>
+				<include name="data/config/IsmmBpt2015*.properties"/>
+				<include name="data/config/IsmmBpt2015.xml"/>
+      </zipfileset>
+      <zipfileset prefix="IsmmBpt2015/" dir="${work}" filemode="755">
+				<include name="launchIsmmBpt2015.sh"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <!-- ======================================== -->
+</project>

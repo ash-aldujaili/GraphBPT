@@ -1,0 +1,41 @@
+This file describes the java files associated with BPT:
+
+1. BinaryPartitionTree : the main class for creating a bpt, the constructor builds the tree in a way that's specified by "Param". It also comes with handy functions for :
+  a. Exporting a factor graph.
+  b. Starting an inference on the factor graph (provided that infer executable from infer.cpp is there)
+  c. Overlaying the class label over the nodes by generating a transparent layer of class labels per bpt level.
+  d. Displaying the bitmap/bounding box representation of a node.
+  e. exporting the bpt.leaves and bpt.nodes files that are useful if we want to use the bpt nodes in other environment other than Java (encodes information about the children, leaves, and their spatial information)
+  
+2. BPTEdge : this class defines the weights or the measure of similarity between neighbouring nodes. It's this class content that controls how nodes are merged.
+
+3. BPTNode: this is an essential class in BPT, it defines a single node in BPT, and builds around it all the important information:
+  a. bounding box.
+  b. bitmap.
+  c. descriptors (currently just the mean color information, other descriptors were implement such as kernel descriptor and statistical descriptors but they are in use now)
+  d. some handy functions for measuring the interaction between nodes.
+  
+4. GUI: this class is just for BPT levels viewings, it builds over the BinaryPartitionTree
+
+5. TreeGraph: this class acts as a tester for BPT. It first plots the BPT tree, do the inference, annotate the nodes (overlay the transparent class labels of the nodes), and allows the user to check the bounding box/bitmap regions of the nodes selectively.
+
+6. ImageAttribute: this class stores the color informations, and optionally computes in a multi-threaded manner a set of basic attributes such as lbp, gradient, stdandard deviation.
+
+7. Param : this class specifies most of the constants (similar to compiler flags) that directs how the tree is constructed and other optional features.
+
+8. BitMap : implements a run length coding to store the bitmap of a node in a compressed form, used as part of the bpt node descriptor.
+
+9. BoundingBox : implements the node bounding box, used as a part of the bpt node descriptor
+
+10. DensSIFTParam: this file is useful when we want to know which sift feature a specific node has. This file reads the parameters (dsiftParam.mat) that are used to create dense sift features by the vl_phow() function. These parameters are later used by BinaryPartitionTree when it is exporting bpt.leaves, bpt.parents, as it exports along with each node the set of 1D indices of the features that each node has in the array of features that are created by vl_phow. The file dsiftParam.mat can be generated for a given image by using writeDSIFTspatialParamPerImg.m
+
+11. KernelDescriptorDictionary: reads the parameters/eigenvectors of the kernel descriptor framework that was calculated in matlab from a matfile. These information are necessary if the the kernel descriptors are used to describe the node (the code for calculating the kernel descriptors can be found in BPTNodeDescriptor
+
+12. BPTNodeDescriptor: the class the contains all the information to describe a node, its bitmap, bounding box, mean color information, mean spatial information (currently the most important descriptors are inserted in BPTNode class) so BPTNodeDescriptor is not used but it can be used later if sophistcated descriptors are to be computed (e.g kernel descriptors)
+
+13. Matrix : a class for storing matrices from Mat files.
+
+14. PaintSpace : a class that helps in plotting the tree by the TreeGraph class
+
+One more thing if BPT is configured to generate files it expect some directories to be present such "data" and "data/annotations" The data directory holds the several input/output files that might be associated with the bpt.
+

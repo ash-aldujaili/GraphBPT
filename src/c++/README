@@ -1,0 +1,4 @@
+This directory contains the necessary files to compiles an executable for performing an inference on factor graphs that are of tree structure
+
+To compile the files, libdai C++ library is needed.
+You can put this file in the examples directory of the library and compile it right away by modifying the makefile in the examples directory
