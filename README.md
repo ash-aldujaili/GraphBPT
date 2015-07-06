@@ -36,7 +36,7 @@ showNodesFeatures(M,N,1,1,nodes,nodesFeautres);
 I have configured the tool to do the segmentation on the example image, I am assuming here you are having linux-64, as the inference engine is compiled for that.
 anyway, I have put the inference source file along, but you need to compile it with its depenedencies of libdai inference library (refer to the paper)
 ~~~
-java -jar bin/bpt.jar TreeGraph [-D dataDir] [image]
+java -cp bin/bpt.jar TreeGraph [image]
 ~~~
   
   
