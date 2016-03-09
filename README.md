@@ -39,6 +39,26 @@ anyway, I have put the inference source file along, but you need to compile it w
 java -cp bin/bpt.jar TreeGraph [image]
 ~~~
   
-  
+If you write a scientific paper describing research that made use of this code, please cite the following paper:
+
+@InBook{Al-Dujaili2015,
+  Title                    = {Mathematical Morphology and Its Applications to Signal and Image Processing: 12th International Symposium, ISMM 2015, Reykjavik, Iceland, May 27-29, 2015. Proceedings},
+  Author                   = {Al-Dujaili, Abdullah
+and Merciol, Fran{\c{c}}ois
+and Lef{\`e}vre, S{\'e}bastien},
+  Chapter                  = {GraphBPT: An Efficient Hierarchical Data Structure for Image Representation and Probabilistic Inference},
+  Editor                   = {Benediktsson, Atli J{\'o}n
+and Chanussot, Jocelyn
+and Najman, Laurent
+and Talbot, Hugues},
+  Pages                    = {301--312},
+  Publisher                = {Springer International Publishing},
+  Year                     = {2015},
+  Address                  = {Cham},
+  Doi                      = {10.1007/978-3-319-18720-4_26},
+  ISBN                     = {978-3-319-18720-4},
+  Url                      = {http://dx.doi.org/10.1007/978-3-319-18720-4_26}
+}
+
   
 Abdullah Al-Dujaili
