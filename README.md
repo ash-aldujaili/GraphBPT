@@ -41,6 +41,7 @@ java -cp bin/bpt.jar TreeGraph [image]
   
 If you write a scientific paper describing research that made use of this code, please cite the following paper:
 
+~~~
 @InBook{Al-Dujaili2015,
   Title                    = {Mathematical Morphology and Its Applications to Signal and Image Processing: 12th International Symposium, ISMM 2015, Reykjavik, Iceland, May 27-29, 2015. Proceedings},
   Author                   = {Al-Dujaili, Abdullah
@@ -59,6 +60,6 @@ and Talbot, Hugues},
   ISBN                     = {978-3-319-18720-4},
   Url                      = {http://dx.doi.org/10.1007/978-3-319-18720-4_26}
 }
-
+~~~
   
 Abdullah Al-Dujaili
