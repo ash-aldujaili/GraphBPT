@@ -39,7 +39,7 @@ anyway, I have put the inference source file along, but you need to compile it w
 java -cp bin/bpt.jar TreeGraph [image]
 ~~~
  
- ## Citation
+ # Citation
  
 If you write a scientific paper describing research that made use of this code, please cite the following paper:
 
